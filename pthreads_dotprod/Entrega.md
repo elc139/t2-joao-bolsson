@@ -41,4 +41,41 @@ A estratégia aqui é agrupar várias somas, cada uma representando uma parcela 
 
 Cada processador irá trabalhar com uma thread envolvendo o mesmo número de elementos e o mesmo tipo de operação. Balanceamento estático.
 
-2-  Speedup = 1.8
+---
+2-  Speedup = 1.8 (Tseq/ Tpar)
+
+---
+3- 
+
+Cada linha da tabela foi executa 5 vezes para fazer uma amostragem mínima. O tempo é a média dessas execuções. Número máximo de threads igual à 2 devido ao número de núcleos disponíveis na máquina.
+
+| Threads        | Elementos           | Repetições  | Tempo (ms) |
+| ------------- |:-------------:| -----:| -----:|
+| 1     | 1000000 | 2000 | 7472247 | 
+| 1     | 2000000 | 2000 | 14724030 | 
+| 1     | 3000000 | 2000 | 22141300 | 
+| 1     | 4000000 | 2000 | 28713101 | 
+| 2     | 1000000 | 2000 | 7539176 | 
+| 2     | 2000000 | 2000 | 15563823 | 
+| 2     | 3000000 | 2000 | 22910443 | 
+| 2     | 4000000 | 2000 | 31922923 | 
+
+---
+4-
+| Elementos            | Sem Threads (s) | Com Threads (s)| Aceleração |
+| ------------- |:-------------:| -----:| -----:|
+| 1000000     | 7472247 | 7539176 | 0,99 | 
+| 2000000     | 14724030 | 15563823 | 0,94 | 
+| 3000000     | 22141300 | 22910443 | 0,96 | 
+| 4000000     | 28713101 | 31922923 | 0,89 | 
+
+
+---
+
+5- A principal diferença é a existência das linhas que contêm `pthread_mutex_lock` e `pthread_mutex_unlock`. Sem essas linhas o programa NÃO está correto, pois significa que 2 ou mais threads porem acessar "simultaneamente" a variável `dotdata.c`. Logo, em algum ponto o programa irá ler/gravar um valor errado com base em uma leitura de um valor errado anteriormente.
+
+```c
+pthread_mutex_lock (&mutexsum);
+dotdata.c += mysum;
+pthread_mutex_unlock (&mutexsum);
+```
