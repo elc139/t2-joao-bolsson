@@ -4,6 +4,7 @@
 ## Questões Pthreads
 1- 
 **Particionamento**
+
 Cada multiplicação pode ser feita em 1 thread diferente e, no final, podemos simplesmente somar todas elas.
 
 ```c
@@ -79,3 +80,27 @@ pthread_mutex_lock (&mutexsum);
 dotdata.c += mysum;
 pthread_mutex_unlock (&mutexsum);
 ```
+
+## Questões OpenMP
+
+Foram usadas apenas 2 threads novamente, alterando o número de elementos nos casos e verificando, posteriormente, a aceleração, que se demonstrou melhor que no caso usando `pthreads`.
+
+| Threads        | Elementos           | Repetições  | Tempo (ms) |
+| ------------- |:-------------:| -----:| -----:|
+| 1     | 1000000 | 2000 | 13430179 | 
+| 1     | 2000000 | 2000 | 24525170 | 
+| 1     | 3000000 | 2000 | 37364830 | 
+| 1     | 4000000 | 2000 | 58817090 | 
+| 2     | 1000000 | 2000 | 13348144 | 
+| 2     | 2000000 | 2000 | 23243782 | 
+| 2     | 3000000 | 2000 | 42245883 | 
+| 2     | 4000000 | 2000 | 51351424 | 
+
+---
+
+| Elementos            | 1 Thread | 2 Threads |Aceleração |
+| ------------- |:-------------:| -----:| -----:|
+| 1000000     | 13430179 | 13348144 | 1,01 | 
+| 2000000     | 24525170 | 23243782 | 1,05 | 
+| 3000000     | 37364830 | 42245883 | 0,88 | 
+| 4000000     | 58817090 | 51351424 | 1,08 | 
